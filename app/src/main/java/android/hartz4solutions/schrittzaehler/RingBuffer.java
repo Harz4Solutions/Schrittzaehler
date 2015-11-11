@@ -1,4 +1,4 @@
-package ch.appquest.stepcounter;
+package android.hartz4solutions.schrittzaehler;
 
 class RingBuffer {
 	private float[] buffer;

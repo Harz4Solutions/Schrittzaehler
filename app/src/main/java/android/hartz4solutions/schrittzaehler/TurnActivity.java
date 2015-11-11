@@ -1,10 +1,11 @@
-package ch.appquest.stepcounter;
+package android.hartz4solutions.schrittzaehler;
 
 import android.app.Activity;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.hartz4solutions.schrittzaehler.R;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -19,7 +20,7 @@ public class TurnActivity extends Activity implements SensorEventListener {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_walk);
+		//setContentView(R.layout.activity_walk);
 		sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 	}

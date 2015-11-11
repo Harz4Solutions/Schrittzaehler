@@ -1,4 +1,4 @@
-package ch.appquest.stepcounter;
+package android.hartz4solutions.schrittzaehler;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -6,8 +6,8 @@ import android.hardware.SensorEventListener;
 
 public class StepCounter implements SensorEventListener {
 
-	private static final int LONG = 1000;
-	private static final int SHORT = 50;
+	private static final int LONG = 400;
+	private static final int SHORT = 2;
 
 	private boolean accelerating = false;
 	private StepListener listener;
@@ -35,7 +35,10 @@ public class StepCounter implements SensorEventListener {
 		float shortAverage = shortBuffer.getAverage();
 		float longAverage = longBuffer.getAverage();
 
+		System.out.println(shortAverage+" - "+longAverage);
+
 		if (!accelerating && (shortAverage > longAverage * 1.1)) {
+			System.out.print("Sis schud bi ä schtep");
 			accelerating = true;
 			listener.onStep();
 		}
