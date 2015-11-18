@@ -9,10 +9,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,14 +23,12 @@ public class WalkActivity extends AppCompatActivity implements StepListener{
     private List<Sensor> sensorList;
     private StepCounter stepCounter;
     private ArrayList<String> directions;
-    private Button startAndPaus;
-    private Button confirm;
+    private Button startAndPause;
     private TextView textView;
     private Speaker speaker;
-    private boolean isRunning = false;
-    private int position = 0;
-    private int stepCount = 0;
-    private int expectedSteps;
+    private int directionCounter=0;
+    private int schritte;
+    private boolean canWalk = false;
 
 
     @Override
@@ -52,29 +46,43 @@ public class WalkActivity extends AppCompatActivity implements StepListener{
 
         Intent intent = getIntent();
         directions = intent.getStringArrayListExtra("DIRECTIONS");
-        startAndPaus = (Button) findViewById(R.id.startAndPause);
-        startAndPaus.setOnClickListener(new View.OnClickListener() {
+        startAndPause = (Button) findViewById(R.id.startAndPause);
+        startAndPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isRunning){
-                    startAndPaus.setText("Pause");
-                    confirm.setActivated(true);
-                    if(position%2==0){
-                        textView.setText("Drehe dich nach "+directions.get(position));
-                        speaker.speak("Drehe dich nach "+directions.get(position));
+                if(directionCounter<directions.size()){
+                    startAndPause.setText("Bereit?");
+                    startAndPause.setEnabled(false);
+                    String aktion = directions.get(directionCounter);
+                    if(aktion.matches("\\d+")){
+                        schritte = Integer.parseInt(aktion);
+                        textView.setText(schritte + " Schritte nach vorne machen");
+                        speaker.speak(schritte + " Schritte nach vorne machen");
+                        canWalk = true;
+                    }
+                    else{
+                        textView.setText("Nach " + aktion + " drehen");
+                        speaker.speak("Nach " + aktion + " drehen");
+                        startAndPause.setEnabled(true);
 
                     }
-                    else {
-                        textView.setText("Drehe "+directions.get(position));
-                        speaker.speak("Drehe "+directions.get(position));
-                        confirm.setActivated(false);
-                        startAndPaus.setText("Start");
-                    }
+                    directionCounter++;
+                } else {
+                    textView.setText("Endstation, QR-Code einscannen");
+                    speaker.speak("Endstation, QR-Code einscannen");
+                    finish();
 
-                }else{
-                    startAndPaus.setText("Start");
-                    confirm.setActivated(false);
                 }
+
+
+
+            }
+        });
+        Button lazywalk = (Button) findViewById(R.id.walk);
+        lazywalk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onStep();
             }
         });
 
@@ -94,6 +102,15 @@ public class WalkActivity extends AppCompatActivity implements StepListener{
 
     @Override
     public void onStep() {
-        stepCount++;
+        if(canWalk){
+            if(schritte!= 1){
+                textView.setText(--schritte + " Schritte nach vorne machen");
+            }else {
+                canWalk=false;
+                speaker.speak("Halt Stop!");
+                textView.setText("Halt Stop!");
+                startAndPause.setEnabled(true);
+            }
+        }
     }
 }
